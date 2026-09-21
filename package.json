@@ -1,0 +1,14 @@
+{
+  "name": "smartirrigation-workspace",
+  "version": "1.0.0",
+  "description": "Root workspace for SmartIrrigation IoT system",
+  "scripts": {
+    "start": "npm start --prefix SmartIrrigation",
+    "web": "npm run web --prefix SmartIrrigation",
+    "android": "npm run android --prefix SmartIrrigation",
+    "ios": "npm run ios --prefix SmartIrrigation",
+    "tunnel": "npm run start --prefix SmartIrrigation -- --tunnel",
+    "install-all": "npm install --prefix SmartIrrigation && cd backend && pip install -r requirements.txt"
+  },
+  "private": true
+}
