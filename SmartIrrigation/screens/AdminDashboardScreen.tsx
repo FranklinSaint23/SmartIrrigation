@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Dimensions, Alert, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSmartIrrigation } from '../context/SmartIrrigationContext';
-import { Colors, Shadows } from '../styles/Theme';
+import { Colors, Shadows, Radii } from '../styles/Theme';
 import { 
   Users, 
   Wrench, 
@@ -14,13 +14,14 @@ import {
   Clock, 
   Activity,
   BarChart2,
-  LogOut
+  LogOut,
+  ArrowRight,
+  Shield
 } from 'lucide-react-native';
-import { Card } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 
 const { width } = Dimensions.get('window');
-const cardWidth = (width - 52) / 2;
+const cardWidth = (width - 48) / 2;
 
 export default function AdminDashboardScreen() {
   const router = useRouter();
@@ -68,142 +69,169 @@ export default function AdminDashboardScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.greeting}>Bonjour Admin 👋</Text>
-          <Text style={styles.headerTitle}>Tableau de bord</Text>
+          <View style={styles.adminBadge}>
+            <Shield size={12} color={Colors.primary} />
+            <Text style={styles.adminBadgeText}>ESPACE ADMINISTRATEUR</Text>
+          </View>
+          <Text style={styles.greeting}>Console Centrale</Text>
+          <Text style={styles.subGreeting}>Gestion du réseau et du parc IoT</Text>
         </View>
+
         <View style={styles.headerButtons}>
           <TouchableOpacity 
             style={styles.iconButton}
-            onPress={() => router.push('/notifications')}
+            onPress={() => router.push('/notifications' as any)}
             activeOpacity={0.7}
           >
-            <Bell size={20} color="#0D5C3A" />
+            <Bell size={18} color={Colors.text} />
             <View style={styles.dot} />
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.iconButton}
-            onPress={() => router.push('/profile')}
+            onPress={() => router.push('/profile' as any)}
             activeOpacity={0.7}
           >
-            <User size={20} color="#0D5C3A" />
+            <User size={18} color={Colors.text} />
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.iconButton}
-            onPress={() => router.push('/settings')}
+            onPress={() => router.push('/settings' as any)}
             activeOpacity={0.7}
           >
-            <Settings size={20} color="#0D5C3A" />
+            <Settings size={18} color={Colors.text} />
           </TouchableOpacity>
           <TouchableOpacity 
-            style={styles.iconButton}
+            style={[styles.iconButton, { backgroundColor: '#FEE2E2' }]}
             onPress={handleLogoutPress}
             activeOpacity={0.7}
           >
-            <LogOut size={20} color={Colors.danger} />
+            <LogOut size={18} color={Colors.danger} />
           </TouchableOpacity>
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         
-        {/* Statistics Grid */}
-        <View style={styles.grid}>
-          {/* Farmers */}
-          <TouchableOpacity style={{ width: cardWidth }} onPress={() => router.push('/admin-farmers')} activeOpacity={0.9}>
-            <Card style={[styles.card, { borderLeftColor: Colors.primary, borderLeftWidth: 4 }]}>
-              <Card.Content style={styles.cardContent}>
-                <View style={[styles.iconCircle, { backgroundColor: Colors.successLight }]}>
-                  <Users size={22} color={Colors.primary} />
-                </View>
-                <Text style={styles.cardLabel}>Agriculteurs</Text>
-                <Text style={styles.cardValue}>{statistics?.num_farmers ?? 25}</Text>
-              </Card.Content>
-            </Card>
-          </TouchableOpacity>
-
-          {/* Technicians */}
-          <TouchableOpacity style={{ width: cardWidth }} onPress={() => router.push('/admin-technicians')} activeOpacity={0.9}>
-            <Card style={[styles.card, { borderLeftColor: Colors.blue, borderLeftWidth: 4 }]}>
-              <Card.Content style={styles.cardContent}>
-                <View style={[styles.iconCircle, { backgroundColor: Colors.infoLight }]}>
-                  <Wrench size={22} color={Colors.blue} />
-                </View>
-                <Text style={styles.cardLabel}>Techniciens</Text>
-                <Text style={styles.cardValue}>{statistics?.num_techs ?? 8}</Text>
-              </Card.Content>
-            </Card>
-          </TouchableOpacity>
-
-          {/* Devices */}
-          <TouchableOpacity style={{ width: cardWidth }} onPress={() => router.push('/admin-devices')} activeOpacity={0.9}>
-            <Card style={[styles.card, { borderLeftColor: '#00ACC1', borderLeftWidth: 4 }]}>
-              <Card.Content style={styles.cardContent}>
-                <View style={[styles.iconCircle, { backgroundColor: '#E0F7FA' }]}>
-                  <Cpu size={22} color="#00ACC1" />
-                </View>
-                <Text style={styles.cardLabel}>ESP32 connectés</Text>
-                <Text style={styles.cardValue}>{statistics?.num_devices ?? 22}</Text>
-              </Card.Content>
-            </Card>
-          </TouchableOpacity>
-
-          {/* Pending Breakdowns */}
-          <TouchableOpacity style={{ width: cardWidth }} onPress={() => router.push('/admin-interventions')} activeOpacity={0.9}>
-            <Card style={[styles.card, { borderLeftColor: Colors.warning, borderLeftWidth: 4 }]}>
-              <Card.Content style={styles.cardContent}>
-                <View style={[styles.iconCircle, { backgroundColor: Colors.warningLight }]}>
-                  <AlertTriangle size={22} color={Colors.warning} />
-                </View>
-                <Text style={styles.cardLabel}>Pannes en attente</Text>
-                <Text style={styles.cardValue}>{statistics?.num_pannes_attente ?? 4}</Text>
-              </Card.Content>
-            </Card>
-          </TouchableOpacity>
+        {/* Titre KPIs */}
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Indicateurs Clés (KPI)</Text>
+          <Text style={styles.sectionSubtitle}>État global du réseau SmartIrrigation</Text>
         </View>
 
-        {/* Global Stats button */}
+        {/* Grille 2x2 des Statistiques */}
+        <View style={styles.grid}>
+          
+          {/* Agriculteurs */}
+          <TouchableOpacity 
+            style={{ width: cardWidth }} 
+            onPress={() => router.push('/admin-farmers' as any)} 
+            activeOpacity={0.85}
+          >
+            <View style={styles.kpiCard}>
+              <View style={styles.kpiHeader}>
+                <View style={[styles.iconWrap, { backgroundColor: '#E8F5E9' }]}>
+                  <Users size={20} color={Colors.primary} />
+                </View>
+                <ArrowRight size={14} color={Colors.textMuted} />
+              </View>
+              <Text style={styles.kpiValue}>{statistics?.num_farmers ?? 25}</Text>
+              <Text style={styles.kpiLabel}>Agriculteurs inscrits</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Techniciens */}
+          <TouchableOpacity 
+            style={{ width: cardWidth }} 
+            onPress={() => router.push('/admin-technicians' as any)} 
+            activeOpacity={0.85}
+          >
+            <View style={styles.kpiCard}>
+              <View style={styles.kpiHeader}>
+                <View style={[styles.iconWrap, { backgroundColor: '#E0F2FE' }]}>
+                  <Wrench size={20} color={Colors.blue} />
+                </View>
+                <ArrowRight size={14} color={Colors.textMuted} />
+              </View>
+              <Text style={styles.kpiValue}>{statistics?.num_techs ?? 8}</Text>
+              <Text style={styles.kpiLabel}>Techniciens actifs</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Boîtiers ESP32 */}
+          <TouchableOpacity 
+            style={{ width: cardWidth }} 
+            onPress={() => router.push('/admin-devices' as any)} 
+            activeOpacity={0.85}
+          >
+            <View style={styles.kpiCard}>
+              <View style={styles.kpiHeader}>
+                <View style={[styles.iconWrap, { backgroundColor: '#F0FDFA' }]}>
+                  <Cpu size={20} color="#0D9488" />
+                </View>
+                <ArrowRight size={14} color={Colors.textMuted} />
+              </View>
+              <Text style={styles.kpiValue}>{statistics?.num_devices ?? 22}</Text>
+              <Text style={styles.kpiLabel}>ESP32 connectés</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Pannes en attente */}
+          <TouchableOpacity 
+            style={{ width: cardWidth }} 
+            onPress={() => router.push('/admin-interventions' as any)} 
+            activeOpacity={0.85}
+          >
+            <View style={styles.kpiCard}>
+              <View style={styles.kpiHeader}>
+                <View style={[styles.iconWrap, { backgroundColor: '#FEF3C7' }]}>
+                  <AlertTriangle size={20} color="#D97706" />
+                </View>
+                <View style={styles.alertChip}>
+                  <Text style={styles.alertChipText}>Action</Text>
+                </View>
+              </View>
+              <Text style={styles.kpiValue}>{statistics?.num_pannes_attente ?? 4}</Text>
+              <Text style={styles.kpiLabel}>Pannes à assigner</Text>
+            </View>
+          </TouchableOpacity>
+
+        </View>
+
+        {/* Bouton Statistiques Avancées */}
         <TouchableOpacity 
           style={styles.statsButton}
-          onPress={() => router.push('/admin-statistics')}
-          activeOpacity={0.8}
+          onPress={() => router.push('/admin-statistics' as any)}
+          activeOpacity={0.85}
         >
-          <BarChart2 size={20} color="#FFFFFF" style={{ marginRight: 8 }} />
-          <Text style={styles.statsButtonText}>Consulter les statistiques avancées</Text>
+          <BarChart2 size={18} color="#FFFFFF" style={{ marginRight: 8 }} />
+          <Text style={styles.statsButtonText}>Consulter les rapports et consommations d'eau</Text>
         </TouchableOpacity>
 
-        {/* Recent Activities Section */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Activités récentes</Text>
+        {/* Section Activités Récentes */}
+        <View style={[styles.sectionHeader, { marginTop: 24 }]}>
+          <Text style={styles.sectionTitle}>Activités Récentes du Réseau</Text>
+          <Text style={styles.sectionSubtitle}>Événements IoT et flux opérationnel</Text>
         </View>
 
-        <Card style={styles.activitiesCard}>
-          <Card.Content style={styles.activitiesContent}>
-            {recentActivities.map((act, index) => (
-              <View key={act.id}>
-                <View style={styles.activityRow}>
-                  <View style={styles.activityIconWrapper}>
-                    <Activity size={16} color={Colors.primary} />
+        <View style={styles.activitiesCard}>
+          {recentActivities.map((activity, index) => (
+            <View key={activity.id}>
+              <View style={styles.activityRow}>
+                <View style={styles.activityDot} />
+                <View style={styles.activityContent}>
+                  <View style={styles.activityHeader}>
+                    <Text style={styles.activityTitle}>{activity.title}</Text>
+                    <Text style={styles.activityTime}>{activity.time}</Text>
                   </View>
-                  <View style={styles.activityDetails}>
-                    <Text style={styles.activityTitle}>{act.title}</Text>
-                    <Text style={styles.activityDesc}>{act.desc}</Text>
-                  </View>
-                  <View style={styles.activityTimeContainer}>
-                    <Clock size={12} color={Colors.gray} style={{ marginRight: 4 }} />
-                    <Text style={styles.activityTime}>{act.time}</Text>
-                  </View>
+                  <Text style={styles.activityDesc}>{activity.desc}</Text>
                 </View>
-                {index < recentActivities.length - 1 && <View style={styles.divider} />}
               </View>
-            ))}
-          </Card.Content>
-        </Card>
+              {index < recentActivities.length - 1 && <View style={styles.divider} />}
+            </View>
+          ))}
+        </View>
 
-        {/* Logout Quick Link */}
-        <TouchableOpacity style={styles.logoutBtn} onPress={handleLogoutPress}>
-          <Text style={styles.logoutBtnText}>Quitter l'Espace Admin</Text>
-        </TouchableOpacity>
-
+        <View style={{ height: 60 }} />
       </ScrollView>
     </View>
   );
@@ -217,175 +245,198 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 20,
+    paddingTop: Platform.OS === 'ios' ? 60 : 45,
+    paddingBottom: 16,
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: Colors.grayLight,
+    borderBottomColor: Colors.border,
+  },
+  adminBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ECFDF5',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: Radii.full,
+    alignSelf: 'flex-start',
+    gap: 4,
+    marginBottom: 6,
+    borderWidth: 1,
+    borderColor: '#D1FAE5',
+  },
+  adminBadgeText: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: Colors.primary,
+    letterSpacing: 0.6,
   },
   greeting: {
-    fontSize: 13,
-    color: Colors.gray,
-    fontWeight: '700',
-  },
-  headerTitle: {
     fontSize: 22,
-    fontWeight: '800',
+    fontWeight: '900',
     color: Colors.text,
+    letterSpacing: -0.3,
+  },
+  subGreeting: {
+    fontSize: 13,
+    color: Colors.textSecondary,
     marginTop: 2,
   },
   headerButtons: {
     flexDirection: 'row',
-    gap: 8,
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 6,
   },
   iconButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: Colors.background,
+    width: 36,
+    height: 36,
+    borderRadius: Radii.full,
+    backgroundColor: '#F1F5F9',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
   },
   dot: {
     position: 'absolute',
-    top: 10,
-    right: 10,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    top: 7,
+    right: 8,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
     backgroundColor: Colors.danger,
   },
   scrollContainer: {
     paddingHorizontal: 20,
     paddingTop: 20,
-    paddingBottom: 40,
+  },
+  sectionHeader: {
+    marginBottom: 14,
+  },
+  sectionTitle: {
+    fontSize: 17,
+    fontWeight: '800',
+    color: Colors.text,
+    letterSpacing: -0.2,
+  },
+  sectionSubtitle: {
+    fontSize: 12,
+    color: Colors.textSecondary,
+    marginTop: 1,
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
-    marginBottom: 20,
+    justifyContent: 'space-between',
+    rowGap: 14,
+    marginBottom: 16,
   },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#E8ECE9',
-    ...Shadows.light,
-  },
-  cardContent: {
+  kpiCard: {
+    backgroundColor: Colors.surface,
+    borderRadius: Radii.lg,
     padding: 16,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    ...Shadows.subtle,
   },
-  iconCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+  kpiHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'center',
     marginBottom: 12,
   },
-  cardLabel: {
-    fontSize: 12,
-    color: Colors.gray,
-    fontWeight: '700',
+  iconWrap: {
+    width: 38,
+    height: 38,
+    borderRadius: Radii.md,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  cardValue: {
-    fontSize: 24,
+  alertChip: {
+    backgroundColor: '#FEF3C7',
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: Radii.full,
+  },
+  alertChipText: {
+    fontSize: 10,
     fontWeight: '800',
+    color: '#B45309',
+  },
+  kpiValue: {
+    fontSize: 28,
+    fontWeight: '900',
     color: Colors.text,
-    marginTop: 4,
+    letterSpacing: -0.5,
+  },
+  kpiLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: Colors.textSecondary,
+    marginTop: 2,
   },
   statsButton: {
+    backgroundColor: Colors.primary,
     height: 48,
-    backgroundColor: '#0D5C3A',
-    borderRadius: 24,
+    borderRadius: Radii.full,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 24,
-    ...Shadows.light,
+    ...Shadows.subtle,
   },
   statsButtonText: {
     color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  sectionHeader: {
-    marginBottom: 12,
-  },
-  sectionTitle: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: '800',
-    color: Colors.text,
   },
   activitiesCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
+    backgroundColor: Colors.surface,
+    borderRadius: Radii.lg,
+    padding: 16,
     borderWidth: 1,
-    borderColor: '#E8ECE9',
-    ...Shadows.light,
-    marginBottom: 24,
-  },
-  activitiesContent: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    borderColor: Colors.border,
+    ...Shadows.subtle,
+    marginBottom: 20,
   },
   activityRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
+    alignItems: 'flex-start',
+    paddingVertical: 8,
   },
-  activityIconWrapper: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: Colors.successLight,
-    alignItems: 'center',
-    justifyContent: 'center',
+  activityDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: Colors.mint,
+    marginTop: 6,
     marginRight: 12,
   },
-  activityDetails: {
+  activityContent: {
     flex: 1,
-    gap: 2,
+  },
+  activityHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   activityTitle: {
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '800',
     color: Colors.text,
   },
-  activityDesc: {
-    fontSize: 11,
-    color: Colors.gray,
-    fontWeight: '600',
-  },
-  activityTimeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   activityTime: {
-    fontSize: 10,
-    color: Colors.gray,
-    fontWeight: '600',
+    fontSize: 11,
+    color: Colors.textMuted,
+  },
+  activityDesc: {
+    fontSize: 12,
+    color: Colors.textSecondary,
+    marginTop: 2,
   },
   divider: {
     height: 1,
-    backgroundColor: Colors.grayLight,
-  },
-  logoutBtn: {
-    height: 52,
-    borderRadius: 26,
-    borderWidth: 1.5,
-    borderColor: Colors.danger,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
-  },
-  logoutBtnText: {
-    fontSize: 15,
-    color: Colors.danger,
-    fontWeight: '700',
+    backgroundColor: Colors.borderLight,
+    marginVertical: 4,
   },
 });

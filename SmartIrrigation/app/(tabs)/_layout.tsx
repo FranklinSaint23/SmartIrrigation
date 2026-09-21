@@ -1,8 +1,9 @@
 import React from 'react';
+import { View, Platform, StyleSheet } from 'react-native';
 import { Tabs } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
-import { Home, Sliders } from 'lucide-react-native';
+import { Home, Sliders, Activity } from 'lucide-react-native';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme() ?? 'light';
@@ -13,20 +14,27 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.brand,
-        tabBarInactiveTintColor: colors.gray,
+        tabBarInactiveTintColor: colors.tabIconDefault,
+        tabBarShowLabel: true,
         tabBarLabelStyle: {
           fontSize: 12,
-          fontWeight: '600',
+          fontWeight: '700',
+          marginTop: -4,
+          marginBottom: 4,
         },
         tabBarStyle: {
-          backgroundColor: colors.cardBackground,
+          backgroundColor: '#FFFFFF',
           borderTopColor: colors.border,
-          height: 64,
-          paddingBottom: 10,
+          borderTopWidth: 1,
+          height: Platform.OS === 'ios' ? 84 : 64,
+          paddingBottom: Platform.OS === 'ios' ? 24 : 8,
           paddingTop: 8,
           position: 'absolute',
-          borderTopWidth: 1.5,
-          elevation: 8,
+          elevation: 6,
+          shadowColor: '#0F172A',
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.04,
+          shadowRadius: 10,
         },
       }}>
       <Tabs.Screen
@@ -34,7 +42,9 @@ export default function TabLayout() {
         options={{
           title: 'Accueil',
           tabBarIcon: ({ color, focused }) => (
-            <Home size={22} color={color} strokeWidth={focused ? 2.5 : 2} />
+            <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
+              <Home size={20} color={focused ? colors.brand : color} strokeWidth={focused ? 2.5 : 2} />
+            </View>
           ),
         }}
       />
@@ -43,10 +53,25 @@ export default function TabLayout() {
         options={{
           title: 'Contrôle',
           tabBarIcon: ({ color, focused }) => (
-            <Sliders size={22} color={color} strokeWidth={focused ? 2.5 : 2} />
+            <View style={[styles.iconWrapper, focused && styles.iconWrapperActive]}>
+              <Sliders size={20} color={focused ? colors.brand : color} strokeWidth={focused ? 2.5 : 2} />
+            </View>
           ),
         }}
       />
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  iconWrapper: {
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconWrapperActive: {
+    backgroundColor: '#E6F4EA',
+  },
+});
