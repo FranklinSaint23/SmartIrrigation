@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 
 // Adresse IP de ton PC obtenue via `ipconfig` (utilisée pour mobile physique)
-const DEFAULT_IP = '10.121.230.1';
+const DEFAULT_IP = '172.20.10.10';
 
 // Sur Web, utilise automatiquement le hostname courant (ex: localhost ou 127.0.0.1)
 const LOCAL_IP = Platform.OS === 'web' && typeof window !== 'undefined' && window.location?.hostname
