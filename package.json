@@ -10,5 +10,8 @@
     "tunnel": "npm run start --prefix SmartIrrigation -- --tunnel",
     "install-all": "npm install --prefix SmartIrrigation && cd backend && pip install -r requirements.txt"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "expo": "^57.0.25"
+  }
 }
